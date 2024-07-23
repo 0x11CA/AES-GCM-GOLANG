@@ -16,7 +16,6 @@ func main() {
 }
 
 func encrypt(plaintext []byte, secretKey []byte) []byte {
-	fmt.Println("Secret key is ", string(secretKey))
 	block, err := aes.NewCipher(secretKey)
 	if err != nil {
 		panic(err)
@@ -38,7 +37,6 @@ func encrypt(plaintext []byte, secretKey []byte) []byte {
 }
 
 func decrypt(ciphertext []byte, secretKey []byte) []byte {
-	fmt.Println("Secret key is ", string(secretKey))
 	block, err := aes.NewCipher(secretKey)
 	if err != nil {
 		panic(err)
@@ -56,7 +54,6 @@ func decrypt(ciphertext []byte, secretKey []byte) []byte {
 	if err != nil {
 		panic(err)
 	}
-	// fmt.Println(plaintext)
 	return plaintext //byte array
 }
 
@@ -126,15 +123,16 @@ func genKey(key string) []byte {
 	// 1. Using this tool: https://emn178.github.io/online-tools/sha256.html
 	//    We encode the input to get the hash
 	//    Note: a. Input type UTF-8
-	//	        b. Output type Hex
+	//	    b. Output type Hex
 	// 2. Using this tool: https://emn178.github.io/online-tools/base32_encode.html
 	//    We encode the hash to get the secret key
 	//    Note: a. Input type Hex
-	// 3. We take the secret key from the 6th character to the 38th character
+	// 3. We take the secret key from the first 32 characters
 	// 4. We convert the secret key to a byte array and return it
 
 	hash := sha256.New()
 	hash.Write([]byte(key))
-	encoded := base32.StdEncoding.EncodeToString(hash.Sum(nil)[:])[5:37]
+	encoded := base32.StdEncoding.EncodeToString(hash.Sum(nil)[:])[:32]
+	fmt.Println("Secret key is", string(encoded))
 	return []byte(encoded)
 }
